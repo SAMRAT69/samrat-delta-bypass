@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 app.get("/delta/bypass", async (req, res) => {
   const { link } = req.query;
   if (!link) {
-    return res.status(400).json({ warning: "Url Needed, Pince API" });
+    return res.status(400).json({ warning: "Url Needed" });
   }
   const StartTime = Date.now();
   try {
@@ -33,7 +33,7 @@ app.get("/delta/bypass", async (req, res) => {
     } else {
       return res.status(400).json({
         Note: "Url not supported to bypass Only Delta https://gateway.platoboost.com/a/8?id= like this",
-        Message: "Prince API",
+        Message: "Samrat API",
       });
     }
 
@@ -42,7 +42,7 @@ app.get("/delta/bypass", async (req, res) => {
     res.json({
       key: result,
       duration: `${duration}s`,
-      credit: "Made by Prince API",
+      credit: "Made by Samrat API",
     });
   } catch (error) {
     console.error("Error:", error.message);
@@ -52,7 +52,7 @@ app.get("/delta/bypass", async (req, res) => {
       Error: "Failed to bypass",
       Details: error.message,
       Duration: `${duration}s`,
-      Message: "Made by Prince API",
+      Message: "Made by Samrat API",
     });
   }
 });
