@@ -13,20 +13,23 @@ app.get("/delta/bypass", async (req, res) => {
     let result;
     if (link.startsWith("https://gateway.platoboost.com/a/8?id=")) {
       try {
+        console.log("Request started:", link);
         const DeltaAuthResponse = await axios.get(
-          `http://fi1.bot-hosting.net:6780/api/bypass?link=${encodeURIComponent(link)}`
+          `http://fi1.bot-hosting.net:6780/api/bypass?link=${encodeURIComponent(link)}`,
+          { timeout: 5000 }
         );
-        
+        console.log("Response from API:", DeltaAuthResponse.data);
+
         if (DeltaAuthResponse.data.key) {
           result = DeltaAuthResponse.data.key;
-          console.log("Success:", result);
         } else {
+          console.log("Failed to retrieve key:", DeltaAuthResponse.data);
           return res.status(500).json({
             error: "Failed to bypass url",
           });
         }
       } catch (error) {
-        console.error("Failed to bypass url", error.message);
+        console.error("Failed to bypass url:", error.response ? error.response.data : error.message);
         return res.status(500).json({
           error: "Error fetching delta url",
         });
