@@ -16,8 +16,9 @@ app.get("/delta/bypass", async (req, res) => {
         const DeltaAuthResponse = await axios.get(
           `http://fi1.bot-hosting.net:6780/api/bypass?link=${encodeURIComponent(link)}`
         );
-        if (DeltaAuthResponse.data.Result) {
-          result = DeltaAuthResponse.data.Result;
+        
+        if (DeltaAuthResponse.data.key) {
+          result = DeltaAuthResponse.data.key;
           console.log("Success:", result);
         } else {
           return res.status(500).json({
@@ -32,7 +33,7 @@ app.get("/delta/bypass", async (req, res) => {
       }
     } else {
       return res.status(400).json({
-        Note: "Url not supported to bypass Only Delta https://gateway.platoboost.com/a/8?id= like this",
+        Note: "Url not supported to bypass. Only Delta https://gateway.platoboost.com/a/8?id= links are supported.",
         Message: "Samrat API",
       });
     }
@@ -55,8 +56,4 @@ app.get("/delta/bypass", async (req, res) => {
       Message: "Made by Samrat API",
     });
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });
