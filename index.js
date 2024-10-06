@@ -14,10 +14,10 @@ app.get("/delta/bypass", async (req, res) => {
     if (link.startsWith("https://gateway.platoboost.com/a/8?id=")) {
       try {
         const DeltaAuthResponse = await axios.get(
-          `https://kazi-api.vercel.app/api/bypass?link=${encodeURIComponent(link)}`
+          `http://fi1.bot-hosting.net:6780/api/bypass?link=${encodeURIComponent(link)}`
         );
-        if (DeltaAuthResponse.data.Result) {
-          result = DeltaAuthResponse.data.Result;
+        if (DeltaAuthResponse.data.ket) {
+          result = DeltaAuthResponse.data.key;
           console.log("Success:", result);
         } else {
           return res.status(500).json({
