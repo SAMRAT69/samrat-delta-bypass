@@ -6,38 +6,34 @@ const PORT = process.env.PORT || 3000;
 app.get("/delta/bypass", async (req, res) => {
   const { link } = req.query;
   if (!link) {
-    return res.status(400).json({ warning: "Url Needed" });
+    return res.status(400).json({ warning: "Url Needed, Samrat API" });
   }
   const StartTime = Date.now();
   try {
     let result;
     if (link.startsWith("https://gateway.platoboost.com/a/8?id=")) {
       try {
-        console.log("Request started:", link);
         const DeltaAuthResponse = await axios.get(
-          `http://fi1.bot-hosting.net:6780/api/bypass?link=${encodeURIComponent(link)}`,
-          { timeout: 5000 }
+          `https://kazi-api.vercel.app/api/bypass?link=${encodeURIComponent(link)}`
         );
-        console.log("Response from API:", DeltaAuthResponse.data);
-
-        if (DeltaAuthResponse.data.key) {
-          result = DeltaAuthResponse.data.key;
+        if (DeltaAuthResponse.data.Result) {
+          result = DeltaAuthResponse.data.Result;
+          console.log("Success:", result);
         } else {
-          console.log("Failed to retrieve key:", DeltaAuthResponse.data);
           return res.status(500).json({
             error: "Failed to bypass url",
           });
         }
       } catch (error) {
-        console.error("Failed to bypass url:", error.response ? error.response.data : error.message);
+        console.error("Failed to bypass url", error.message);
         return res.status(500).json({
           error: "Error fetching delta url",
         });
       }
     } else {
       return res.status(400).json({
-        Note: "Url not supported to bypass. Only Delta https://gateway.platoboost.com/a/8?id= links are supported.",
-        Message: "Samrat API",
+        Note: "Url not supported to bypass Only Delta https://gateway.platoboost.com/a/8?id= like this",
+        Message: "SAMRAT API",
       });
     }
 
@@ -59,4 +55,8 @@ app.get("/delta/bypass", async (req, res) => {
       Message: "Made by Samrat API",
     });
   }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
