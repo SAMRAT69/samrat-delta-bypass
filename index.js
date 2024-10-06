@@ -18,7 +18,7 @@ app.get("/delta/bypass", async (req, res) => {
         );
         if (DeltaAuthResponse.data.Result) {
           result = DeltaAuthResponse.data.Result;
-          console.log("Success:", result);
+          console.log("Success:", key);
         } else {
           return res.status(500).json({
             error: "Failed to bypass url",
