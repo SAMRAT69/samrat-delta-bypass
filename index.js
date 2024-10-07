@@ -16,7 +16,7 @@ app.get("/delta/bypass", async (req, res) => {
         const DeltaAuthResponse = await axios.get(
           `http://fi1.bot-hosting.net:6780/api/bypass?link=${encodeURIComponent(link)}`
         );
-        if (DeltaAuthResponse.data.ket) {
+        if (DeltaAuthResponse.data.key) {
           result = DeltaAuthResponse.data.key;
           console.log("Success:", result);
         } else {
