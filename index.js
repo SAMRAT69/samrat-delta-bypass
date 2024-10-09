@@ -4,55 +4,67 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get("/delta/bypass", async (req, res) => {
-  const { link } = req.query;
+  const { link } = req.query; 
+
   if (!link) {
-    return res.status(400).json({ warning: "Url Needed, Samrat API" });
+    return res.status(400).json({ error: "No link provided" });
   }
+
+  console.log("Received link:", link); // Log the received link
+
   const StartTime = Date.now();
   try {
     let result;
+    // Check if the link starts with the specified URL format
     if (link.startsWith("https://gateway.platoboost.com/a/8?id=")) {
-      try {
-        const DeltaAuthResponse = await axios.get(
-          `http://fi1.bot-hosting.net:6780/api/bypass?link=${encodeURIComponent(link)}`
-        );
-        if (DeltaAuthResponse.data.key) {
-          result = DeltaAuthResponse.data.key;
-          console.log("Success:", result);
-        } else {
+      const idMatch = link.match(/id=([^&]+)/);
+      const id = idMatch ? idMatch[1] : null;
+
+      if (id) {
+        try {
+          console.log("Extracted ID:", id); // Log the extracted ID
+          // Make the API call using the extracted ID
+          const DeltaAuthResponse = await axios.get(
+            `https://api-gateway.platoboost.com/v1/authenticators/8/${id}`
+          );
+
+          console.log("API response:", DeltaAuthResponse.data); // Log the API response
+
+          if (DeltaAuthResponse.data.key) {
+            result = DeltaAuthResponse.data.key; // Get only the key
+            const EndTime = Date.now();
+            const duration = ((EndTime - StartTime) / 1000).toFixed(2);
+            return res.json({
+              key: result, // Return only the key
+              Duration: `${duration}s`,
+              credit: "Made by Samrat API",
+            });
+          } else {
+            return res.status(500).json({
+              error: "No key found in response",
+            });
+          }
+        } catch (error) {
+          // Log the specific error response from the API
+          console.error("Failed to bypass url:", error.response ? error.response.data : error.message);
           return res.status(500).json({
-            error: "Failed to bypass url",
+            error: "Failed to bypass",
           });
         }
-      } catch (error) {
-        console.error("Failed to bypass url", error.message);
-        return res.status(500).json({
-          error: "Error fetching delta url",
+      } else {
+        return res.status(400).json({
+          error: "Invalid ID in link",
         });
       }
     } else {
       return res.status(400).json({
-        Note: "Url not supported to bypass Only Delta https://gateway.platoboost.com/a/8?id= like this",
-        Message: "SAMRAT API",
+        error: "Invalid link format. Must start with https://gateway.platoboost.com/a/8?id=",
       });
     }
-
-    const EndTime = Date.now();
-    const duration = ((EndTime - StartTime) / 1000).toFixed(2);
-    res.json({
-      key: result,
-      duration: `${duration}s`,
-      credit: "Made by Samrat API",
-    });
   } catch (error) {
-    console.error("Error:", error.message);
-    const EndTime = Date.now();
-    const duration = ((EndTime - StartTime) / 1000).toFixed(2);
-    res.status(500).json({
-      Error: "Failed to bypass",
-      Details: error.message,
-      Duration: `${duration}s`,
-      Message: "Made by Samrat API",
+    console.error("Unexpected error:", error.message);
+    return res.status(500).json({
+      error: "Unexpected error occurred",
     });
   }
 });
