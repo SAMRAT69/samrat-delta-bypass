@@ -28,7 +28,7 @@ app.get("/delta/bypass", async (req, res) => {
             `https://api-gateway.platoboost.com/v1/authenticators/8/${id}`
           );
 
-          console.log("API response:", DeltaAuthResponse.data); // Log the API response
+          console.log("API response:", DeltaAuthResponse.key); // Log the API response
 
           if (DeltaAuthResponse.data.key) {
             result = DeltaAuthResponse.data.key; // Get only the key
